@@ -11,6 +11,7 @@ from scrapy.pipelines.images import ImagesPipeline
 import MySQLdb
 import MySQLdb.cursors
 from twisted.enterprise import adbapi
+import time
 
 
 class ArticlespiderPipeline(object):
@@ -20,7 +21,7 @@ class ArticlespiderPipeline(object):
 
 class JsonfilePipeline(object):
     def __init__(self):
-        self.file = open('json.txt','a',encoding='utf-8')
+        self.file = open('jssa.txt','a',encoding='utf-8')
 
     def process_item(self, item, spider):
         lines = json.dumps(dict(item),ensure_ascii=False)+'\n'
@@ -50,16 +51,47 @@ class MysqlPipeline(object):
         self.cursor=self.conn.cursor()
 
     def process_item(self, item, spider):
-        insert_sql = """
-                    insert into ok(title, url, create_date, f_nums)
-                    VALUES (%s, %s, %s, %s)
+
+        try:
+            insert_sql = """
+                        insert into ok(title, url, create_date, f_nums)
+                        VALUES (%s, %s, %s, %s)
+                    """
+            self.cursor.execute(insert_sql, (item["title"],
+                                             item["url"],
+                                             item["create_date"],
+                                             item["f_nums"]))
+            self.conn.commit()
+        except Exception as e:
+            time.sleep(10000)
+
+            return item
+
+class mysqlPipeline(object):
+    def __init__(self):
+        self.conn=MySQLdb.connect('172.30.110.100','root','pk123456','article_databases',charset='utf8',use_unicode=True)
+        self.cursor=self.conn.cursor()
+
+    def process_item(self,item,spider):
+
+        try:
+            insert_sql = """
+                            insert into xiaozhao(con_name,con_type,con_zhiye,con_xinshui,con_jd,con_ar)
+                            VALUES (%s,%s,%s,%s,%s,%s)
                 """
-        self.cursor.execute(insert_sql, (item["title"],
-                                         item["url"],
-                                         item["create_date"],
-                                         item["f_nums"]))
-        self.conn.commit()
-        return item
+            self.cursor.execute(insert_sql, (item['con_name'],
+                                                item['con_type'],
+                                                item['con_zhiye'],
+                                                item['con_xinshui'],
+                                                item['con_jd'],
+
+                                                item['con_ar']))
+        except Exception as e:
+
+            self.conn.commit()
+
+
+
 
 
 

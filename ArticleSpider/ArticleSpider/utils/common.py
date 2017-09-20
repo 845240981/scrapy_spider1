@@ -1,4 +1,5 @@
 import hashlib
+import itertools
 
 
 def get_md5(url):
@@ -9,3 +10,6 @@ def get_md5(url):
     return m.hexdigest()
 
 
+def convert(listnumber):
+    value="".join(itertools.chain(*listnumber))
+    return value

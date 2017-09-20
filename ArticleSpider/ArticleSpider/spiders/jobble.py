@@ -2,7 +2,7 @@
 import scrapy
 from urllib import parse
 from scrapy.http import Request
-from ArticleSpider.items import ArticleItem,AticlrItemloader
+from ArticleSpider.items import ArticleItem
 import re
 from ArticleSpider.utils.common import  get_md5
 import datetime

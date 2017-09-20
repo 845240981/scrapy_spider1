@@ -19,7 +19,7 @@ class ArticlespiderItem(scrapy.Item):
 
 
 
-class AticlrItemloader(ItemLoader):
+class Defaultloader(ItemLoader):
 
     default_output_processor=TakeFirst()
 
@@ -64,7 +64,7 @@ class ArticleItem(scrapy.Item):
         input_processor =MapCompose(lambda x :x+'ok'),
         output_processor = TakeFirst()
     )
-    create_date = scrapy.Field(input_processor =MapCompose(date_convert),
+    create_date = scrapy.Field(input_processor = MapCompose(date_convert),
         output_processor= TakeFirst())
     url=scrapy.Field()
     url_id=scrapy.Field()
@@ -76,4 +76,23 @@ class ArticleItem(scrapy.Item):
     c_nums = scrapy.Field(input_processor =MapCompose(get_nums))
     f_nums = scrapy.Field(input_processor =MapCompose(get_nums))
     tags = scrapy.Field()
+
+
+class HuayingItem(scrapy.Item):
+
+    def jdhandle(value):
+        value= value.replace('\r','')
+        value= value.replace('\n','').strip()
+
+        return value
+
+
+
+
+    con_name = scrapy.Field()
+    con_type = scrapy.Field()
+    con_zhiye = scrapy.Field()
+    con_xinshui = scrapy.Field()
+    con_jd = scrapy.Field(input_processor=MapCompose(jdhandle))
+    con_ar = scrapy.Field()
 
